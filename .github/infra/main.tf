@@ -6,21 +6,26 @@ terraform {
   }
 }
 
-variable "github_token" {
-  description = "GitHub token with repo and environment access."
-  type        = string
-  sensitive   = true
-}
-
 # Configure the GitHub provider
 provider "github" {
   # The token will be sourced from GITHUB_TOKEN environment variable in the workflow
   token = var.github_token
+
 }
 
 # Data source to fetch the current repository details
 data "github_repository" "current" {
-  full_name = "amsrun/gatest" # Replace with your repository full name
+  full_name = "${var.github_repository}" # Replace with your repository full name
+}
+
+resource "github_branch" "develop" {
+  repository = github_repository.current.name
+  branch     = "develop"
+}
+
+resource "github_branch_default" "default"{
+  repository = github_repository.current.name
+  branch     = github_branch.develop.branch
 }
 
 # Create a 'staging' environment

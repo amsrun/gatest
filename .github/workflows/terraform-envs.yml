@@ -1,4 +1,4 @@
-name: Terraform Environments
+name: Terraform Environments (INACTIVE)
 
 on:
   workflow_dispatch:

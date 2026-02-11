@@ -1,4 +1,4 @@
-name: Terraform GitHub
+name: Terraform GitHub (INACTIVE)
 
 on:
   workflow_dispatch:
