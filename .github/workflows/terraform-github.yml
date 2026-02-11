@@ -6,13 +6,16 @@ on:
 permissions:
   contents: read
 
+env:
+  TF_VAR_github_token: ${{ github.token }}
+
 jobs:
   terraform:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        workspace: [development, staging, production]
+        workspace: [development] #, staging, production]
     defaults:
       run:
         working-directory: .github/infra
@@ -24,7 +27,6 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: ${{ vars.TERRAFORM_VERSION || '1.6.6' }}
+          terraform_version: ${{ vars.TERRAFORM_VERSION || '1.14.4' }}
 
       - run: terraform --version
-      - run: ls -ll

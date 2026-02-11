@@ -1,0 +1,31 @@
+name: Terraform GitHub Environment Management
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    permissions:
+      # Grant write permissions for the GITHUB_TOKEN to interact with repository administration (environments)
+      contents: read
+      actions: read
+      administration: write
+    defaults:
+      run:
+        working-directory: .github/infra
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan
