@@ -23,6 +23,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - run: echo ${{ vars.token }}
+      - run: export TF_VAR_github_token=${{ vars.token }}
       - run: env
 
       - name: Setup Terraform
