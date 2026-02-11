@@ -4,9 +4,6 @@ on:
   workflow_call:
     # Map the workflow outputs to job outputs
     inputs:
-      environment:
-        required: true
-        type: string
       VAR:
         required: true
         type: string
@@ -14,8 +11,7 @@ on:
 jobs:
   my-dynamic-env-job:
     runs-on: ubuntu-latest
-    environment:
-      name: ${{ inputs.environment }}
+    environment: production
     steps:
       - run: |
           echo "${{ vars.VAR }}"
