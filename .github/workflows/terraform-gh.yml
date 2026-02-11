@@ -17,15 +17,11 @@ jobs:
         working-directory: .github/infra
 
     env:
-      TF_VAR_github_token: ${{ vars.token }}
+      TF_VAR_github_token: ${{ inputs.token }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - run: echo ${{ vars.token }}
-      - run: export TF_VAR_github_token=${{ vars.token }}
-      - run: env
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
