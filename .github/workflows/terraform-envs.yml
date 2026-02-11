@@ -1,0 +1,46 @@
+name: Terraform Environments
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: [development, staging, production]
+    environment: ${{ matrix.environment }}
+    defaults:
+      run:
+        working-directory: infra
+    env:
+      TF_VAR_environment: ${{ matrix.environment }}
+      # Map org-level vars to TF_VAR_* values as needed.
+      TF_VAR_org_secret: ${{ vars.TF_VAR_ORG_SECRET }}
+      TF_VAR_org_token: ${{ vars.TF_VAR_ORG_TOKEN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ vars.TERRAFORM_VERSION || '1.6.6' }}
+
+      - name: Init
+        run: terraform init -input=false
+
+      - name: Select workspace
+        run: |
+          terraform workspace select "${{ matrix.environment }}" || terraform workspace new "${{ matrix.environment }}"
+
+      - name: Validate
+        run: terraform validate
+
+      - name: Plan
+        run: terraform plan -input=false -out="tfplan-${{ matrix.environment }}.bin"
