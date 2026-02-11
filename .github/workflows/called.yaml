@@ -6,14 +6,11 @@ on:
     secrets:
       VAR:
         required: true
-        type: string
 
 jobs:
   my-dynamic-env-job:
     runs-on: ubuntu-latest
     environment: production
-    env:
-      VAR: ${{ secrets.VAR }}
     steps:
       - run: |
-          echo "${{ env.VAR }}"
+          echo "${{ secrets.VAR }}"
