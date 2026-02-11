@@ -2,6 +2,7 @@ name: Reusable Print Environment Variable
 
 on:
   workflow_call:
+  workflow_dispatch:
 
 jobs:
   my-dynamic-env-job:
