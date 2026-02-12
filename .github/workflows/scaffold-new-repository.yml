@@ -27,7 +27,7 @@ jobs:
             exit 1
           fi
 
-  terraform-plan:
+  plan:
     needs: validate
     uses: amsrun/template/.github/workflows/called-terraform-github.yml@main
     with:
@@ -35,8 +35,8 @@ jobs:
       token: ${{ inputs.token }}
       apply: false
 
-  terraform-apply:
-    needs: terraform-plan
+  apply:
+    needs: plan
     uses: amsrun/template/.github/workflows/called-terraform-github.yml@main
     with:
       repository: ${{ inputs.repository }}
@@ -44,7 +44,7 @@ jobs:
       apply: true
 
   seed-repository:
-    needs: terraform-apply
+    needs: apply
     uses: amsrun/template/.github/workflows/called-seed-repository.yml@main
     with:
       repository: ${{ inputs.repository }}
