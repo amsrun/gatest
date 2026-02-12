@@ -35,3 +35,12 @@ jobs:
       token: ${{ inputs.token }}
       apply: false
 
+  terraform-apply:
+    needs: terraform-plan
+    environment: terraform
+    uses: amsrun/template/.github/workflows/terraform-github.yml@main
+    with:
+      repository: ${{ inputs.repository }}
+      token: ${{ inputs.token }}
+      apply: true
+
