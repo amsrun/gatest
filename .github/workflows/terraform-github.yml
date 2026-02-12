@@ -1,4 +1,4 @@
-name: Terraform GitHub Repository
+name: Terraform GitHub (Called)
 
 on:
   workflow_call:

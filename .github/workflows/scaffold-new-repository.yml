@@ -1,4 +1,4 @@
-name: Terraform GitHub Environment Management
+name: Scaffold New Repository
 
 on:
   workflow_dispatch:
