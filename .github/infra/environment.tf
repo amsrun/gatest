@@ -1,7 +1,7 @@
 
 # Create a 'staging' environment
 resource "github_repository_environment" "staging" {
-  repository = data.github_repository.next.name
+  repository = github_repository.next.name
   environment = "staging"
   # Optional: add deployment branch policies or wait timers
   deployment_branch_policy {
@@ -12,7 +12,7 @@ resource "github_repository_environment" "staging" {
 
 # Optional: Add an environment secret or variable
 resource "github_actions_environment_variable" "example_variable" {
-  repository    = data.github_repository.next.name
+  repository    = github_repository.next.name
   environment   = github_repository_environment.staging.environment
   variable_name = "EXAMPLE_VAR"
   value         = "example_value"
