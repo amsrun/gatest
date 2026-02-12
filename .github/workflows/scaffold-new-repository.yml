@@ -1,0 +1,44 @@
+name: Terraform GitHub Environment Management
+
+on:
+  workflow_dispatch:
+    inputs:
+      owner:
+        description: 'GitHub Owner (user or org) for the new repository'
+        required: true
+        type: string
+        default: 'Zotec-Product-Development'
+      repository:
+        description: 'Name for the new repository (name only)'
+        required: true
+        type: string
+    secrets:
+      token:
+        description: 'GitHub Token with repo and workflow permissions'
+        required: true
+        type: string
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - run: env | grep GITHUB
+      - name: Checkout code
+        uses: actions/checkout@v4
+      # check to ensure the target repo doesn't exist before attempting to create it, and if it does exist, print a message to the console and skip the creation step instead of attempting to create the repository and failing the workflow
+      - name: Create Repository
+        id: create_repo
+        run: |
+          if gh repo view amsrun/${{ inputs.repository }} > /dev/null 2>&1; then
+            echo "Repository ${{ inputs.repository }} already exists. Skipping creation."
+            exit 1
+          fi
+  terraform-plan:
+    needs: validate
+    runs-on: ubuntu-latest
+    uses: ./.github/workflows/terraform-github.yml@main
+    with:
+      repository: ${{ inputs.repository }}
+      apply: 'false'
+    secrets: inherit
+

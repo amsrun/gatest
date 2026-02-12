@@ -1,4 +1,4 @@
-name: Terraform GitHub Repository
+name: Terraform GitHub Environment Management
 
 on:
   workflow_call:
@@ -20,22 +20,22 @@ on:
 env:
   TF_VAR_github_token: ${{ secrets.token }}
   TF_VAR_github_repository: ${{ inputs.repository }}
-  TF_VAR_environment_secrets: |
-    {
-      "staging": {
-        "API_KEY": "staging-key",
-        "DB_URL": "postgres://..."
-      },
-      "production": {
-        "API_KEY": "prod-key",
-        "DB_URL": "postgres://..."
-      }
+  TF_VAR_environment_secrets='{
+    "staging": {
+      "API_KEY": "staging-key",
+      "DB_URL": "postgres://..."
+    },
+    "production": {
+      "API_KEY": "prod-key",
+      "DB_URL": "postgres://..."
     }
+  }'
 
 defaults:
   run:
     shell: bash
     working-directory: .github/infra
+
 
 permissions: write-all
 
@@ -57,6 +57,11 @@ jobs:
       - name: Terraform Plan
         run: terraform plan
 
+  terraform-apply:
+    needs: terraform
+    runs-on: ubuntu-latest
+    environment: terraform
+    if: inputs.apply == 'true'
+    steps:
       - name: Terraform Apply
-        if: inputs.apply == 'true'
         run: terraform apply -auto-approve

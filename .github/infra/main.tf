@@ -10,39 +10,8 @@ terraform {
 provider "github" {
   # The token will be sourced from GITHUB_TOKEN environment variable in the workflow
   token = var.github_token
-
+  owner = 'amsrun'
 }
 
 # Data source to fetch the current repository details
-data "github_repository" "current" {
-  full_name = "${var.github_repository}" # Replace with your repository full name
-}
 
-resource "github_branch" "develop" {
-  repository = github_repository.current.name
-  branch     = "develop"
-}
-
-resource "github_branch_default" "default"{
-  repository = github_repository.current.name
-  branch     = github_branch.develop.branch
-}
-
-# Create a 'staging' environment
-resource "github_repository_environment" "staging" {
-  repository = data.github_repository.current.name
-  environment = "staging"
-  # Optional: add deployment branch policies or wait timers
-  deployment_branch_policy {
-    protected_branches = true
-    custom_branch_policies = false
-  }
-}
-
-# Optional: Add an environment secret or variable
-resource "github_actions_environment_variable" "example_variable" {
-  repository    = data.github_repository.current.name
-  environment   = github_repository_environment.staging.environment
-  variable_name = "EXAMPLE_VAR"
-  value         = "example_value"
-}

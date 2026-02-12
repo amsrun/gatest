@@ -1,0 +1,32 @@
+name: Terraform GitHub (INACTIVE)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  TF_VAR_github_token: ${{ github.token }}
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        workspace: [development] #, staging, production]
+    defaults:
+      run:
+        working-directory: .github/infra
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ vars.TERRAFORM_VERSION || '1.14.4' }}
+
+      - run: terraform --version
