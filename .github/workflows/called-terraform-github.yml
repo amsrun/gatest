@@ -16,7 +16,6 @@ on:
       token:
         description: 'GitHub Token with repo and workflow permissions'
         required: true
-        type: string
       IAM_AWS_CICD_ACCESSKEY_DEV:
         description: 'AWS Access Key for CICD in Development'
         required: true
