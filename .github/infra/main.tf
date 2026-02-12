@@ -10,7 +10,7 @@ terraform {
 provider "github" {
   # The token will be sourced from GITHUB_TOKEN environment variable in the workflow
   token = var.github_token
-  owner = 'amsrun'
+  owner = "amsrun"
 }
 
 # Data source to fetch the current repository details
