@@ -10,7 +10,7 @@ on:
       apply:
         description: 'Whether to apply the Terraform configuration (true/false)'
         required: true
-        default: 'false'
+        default: false
         type: boolean
       token:
         description: 'GitHub Token with repo and workflow permissions'

@@ -34,4 +34,5 @@ jobs:
     with:
       repository: ${{ inputs.repository }}
       token: ${{ inputs.token }}
+      apply: false
 
