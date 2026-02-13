@@ -1,4 +1,4 @@
-name: Scaffold New Repository
+name: Scaffold new repository
 
 on:
   workflow_dispatch:
