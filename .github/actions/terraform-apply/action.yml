@@ -7,31 +7,22 @@ inputs:
     required: true
     default: .
 
-  variables-json:
-    description: JSON string containing variables to set as TF_VAR_* environment variables
-    required: false
-    default: '{}'
+  variables:
+    description: Content for Terraform variable files
+    required: true
+    default: ''
 
 runs:
   using: composite
   steps:
-    - name: Set TF_VAR environment variables from JSON
+    - name: Create terraform.tfvars with inputs
+      working-directory: ${{ inputs.working-directory }}
       shell: bash
       run: |
-        set -e
-
-        # Parse JSON and set environment variables
-        json_input='${{ inputs.variables-json }}'
-
-        if [ -z "$json_input" ] || [ "$json_input" = '{}' ]; then
-          echo "No variables provided"
-        else
-          # Use jq to iterate through JSON keys and set TF_VAR_* variables
-          echo "$json_input" | jq -r 'to_entries[] | "TF_VAR_\(.key)=\(.value)"' | while read -r var; do
-            echo "Setting $var"
-            echo "$var" >> $GITHUB_ENV
-          done
-        fi
+        FILE_CONTENT="${{ inputs.variables }}"
+        cat <<EOF > terraform.tfvars
+        $FILE_CONTENT
+        EOF
 
     - name: Terraform Init
       shell: bash

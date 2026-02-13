@@ -27,7 +27,7 @@ jobs:
             exit 1
           fi
 
-  apply:
+  terraform:
     needs: validate
     runs-on: ubuntu-latest
     steps:
