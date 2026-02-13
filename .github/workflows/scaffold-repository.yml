@@ -1,4 +1,4 @@
-name: Scaffold new repository
+name: Scaffold New Repository
 
 on:
   workflow_dispatch:
@@ -13,22 +13,21 @@ on:
         type: string
 
 jobs:
-  # validate:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - run: env | grep GITHUB
-  #     - name: Check Repository
-  #       id: create_repo
-  #       env:
-  #         GH_TOKEN: ${{ inputs.token }}
-  #       run: |
-  #         if gh repo view amsrun/${{ inputs.repository }} > /dev/null 2>&1; then
-  #           echo "::error::Repository ${{ inputs.repository }} already exists. Cannot proceed."
-  #           exit 1
-  #         fi
+  check-availability:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check new repository availability
+        id: check_repo
+        env:
+          GH_TOKEN: ${{ inputs.token }}
+        run: |
+          if gh repo view amsrun/${{ inputs.repository }} > /dev/null 2>&1; then
+            echo "::error::Repository ${{ inputs.repository }} already exists. Cannot proceed."
+            exit 1
+          fi
 
   terraform:
-    # needs: validate
+    needs: check-availability
     runs-on: ubuntu-latest
     steps:
       - name: Checkout template repository
@@ -37,12 +36,15 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      # - name: Scaffold Repository with Terraform
-      #   id: scaffold_repo
-      #   uses: ./.github/actions/scaffold-repository
-      #   with:
-      #     repository: ${{ inputs.repository }}
-      #     token: ${{ inputs.token }}
+      - name: Scaffold Repository with Terraform
+        id: scaffold_repo
+        uses: ./.github/actions/scaffold-repository
+        with:
+          repository: ${{ inputs.repository }}
+          token: ${{ inputs.token }}
+          variables: |
+            github_token = "${{ inputs.token }}"
+            github_repository = "${{ inputs.repository }}"
 
       - name: Setup Deployment Environment with Terraform
         id: setup_deployment_environment
@@ -65,16 +67,5 @@ jobs:
               "production": {
                 "AWS_ACCESS_KEY_ID": "${{ secrets.IAM_AWS_CICD_ACCESSKEY_PROD }}",
                 "AWS_SECRET_ACCESS_KEY": "${{ secrets.IAM_AWS_CICD_SECRETID_PROD }}"
-              }
-            }
-            environment_variables = {
-              "development": {
-                "AWS_SECRET_ACCESS_KEY_VAR": "${{ secrets.IAM_AWS_CICD_ACCESSKEY_PROD }}"
-              },
-              "staging": {
-                "AWS_SECRET_ACCESS_KEY_VAR": "${{ secrets.IAM_AWS_CICD_ACCESSKEY_STAGING }}"
-              },
-              "production": {
-                "AWS_SECRET_ACCESS_KEY_VAR": "${{ secrets.IAM_AWS_CICD_ACCESSKEY_PROD }}"
               }
             }

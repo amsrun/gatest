@@ -30,39 +30,6 @@ runs:
         ${{inputs.variables}}
         EOF
       shell: bash
-    # - name: Create terraform.tfvars with inputs
-    #   run: |
-    #     cat <<'EOF' > ${{ github.action_path }}/terraform.tfvars
-    #     github_token = "${{ inputs.token }}"
-    #     github_repository = "${{ inputs.repository }}"
-    #     environment_secrets = {
-    #       "development": {
-    #         "API_KEY": "dev-key",
-    #         "DB_URL": "postgres://..."
-    #       },
-    #       "staging": {
-    #         "API_KEY": "staging-key",
-    #         "DB_URL": "postgres://..."
-    #       },
-    #       "production": {
-    #         "API_KEY": "prod-key",
-    #         "DB_URL": "postgres://..."
-    #       }
-    #     }
-    #     environment_variables = {
-    #       "development": {
-    #         "LOG_LEVEL": "info"
-    #       },
-    #       "staging": {
-    #         "LOG_LEVEL": "debug"
-    #       },
-    #       "production": {
-    #         "LOG_LEVEL": "error"
-    #       }
-    #     }
-    #     EOF
-    #     cat ${{ github.action_path }}/terraform.tfvars
-    #   shell: bash
     - name: Apply Terraform to Scaffold Repository
       uses: ./.github/actions/terraform-apply
       with:

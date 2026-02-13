@@ -1,5 +1,5 @@
 name: Scaffold New Repository
-description: 'Scaffolds a new repository with Terraform configuration to create the repository'
+description: 'Scaffolds with Terraform configuration to create the repository'
 
 inputs:
   repository:
@@ -20,6 +20,11 @@ inputs:
     required: false
     default: 'develop'
     type: string
+  variables:
+    description: Content for Terraform variable files
+    required: false
+    default: ''
+    type: string
 
 runs:
   using: 'composite'
@@ -27,17 +32,14 @@ runs:
     - name: Create terraform.tfvars with inputs
       run: |
         cat <<'EOF' > ${{ github.action_path }}/terraform.tfvars
-        github_token = "${{ inputs.token }}"
-        github_repository = "${{ inputs.repository }}"
+        ${{inputs.variables}}
         EOF
       shell: bash
+
     - name: Apply Terraform to Scaffold Repository
       uses: ./.github/actions/terraform-apply
       with:
         working-directory: ${{ github.action_path }}
-        # variables: |
-        #   github_token = "${{ inputs.token }}"
-        #   github_repository = "${{ inputs.repository }}"
 
     - name: Prepare seed files
       shell: bash
@@ -97,14 +99,3 @@ runs:
       run: |
         echo "✅ Repository ${{ inputs.repository }} has been seeded successfully!"
         echo "🔗 https://github.com/${{ inputs.owner }}/${{ inputs.repository }}"
-
-    # - name: Apply Terraform to Scaffold Repository
-    #   uses: ./.github/actions/terraform-apply
-    #   with:
-    #     working-directory: ./.github/actions/scaffold-repository/terraform
-    #     variables-json: |
-    #       {
-    #         "repository_name": "${{ inputs.repository }}",
-    #         "github_token": "${{ inputs.token }}"
-    #       }
-
