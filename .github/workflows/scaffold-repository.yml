@@ -69,12 +69,12 @@ jobs:
             }
             environment_variables = {
               "development": {
-                "AWS_SECRET_ACCESS_KEY_VAR": "info"
+                "AWS_SECRET_ACCESS_KEY_VAR": "${{ secrets.IAM_AWS_CICD_ACCESSKEY_PROD }}"
               },
               "staging": {
-                "AWS_SECRET_ACCESS_KEY_VAR": "debug"
+                "AWS_SECRET_ACCESS_KEY_VAR": "${{ secrets.IAM_AWS_CICD_ACCESSKEY_STAGING }}"
               },
               "production": {
-                "AWS_SECRET_ACCESS_KEY_VAR": "error"
+                "AWS_SECRET_ACCESS_KEY_VAR": "${{ secrets.IAM_AWS_CICD_ACCESSKEY_PROD }}"
               }
             }
