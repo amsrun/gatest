@@ -1,0 +1,61 @@
+name: Setup Deployment Environment
+
+on:
+  workflow_dispatch:
+    inputs:
+      repository:
+        description: 'Name for the new repository (name only)'
+        required: true
+        type: string
+      token:
+        description: 'GitHub Token with repo and workflow permissions'
+        required: true
+        type: string
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Repository
+        id: check_repo
+        env:
+          GH_TOKEN: ${{ inputs.token }}
+        run: |
+          if ! gh repo view amsrun/${{ inputs.repository }} > /dev/null 2>&1; then
+            echo "::error::Repository ${{ inputs.repository }} does not exist. Cannot proceed."
+            exit 1
+          fi
+
+  terraform:
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout template repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Setup Deployment Environment with Terraform
+        id: setup_deployment_environment
+        uses: ./.github/actions/setup-deploy-environment
+        with:
+          repository: ${{ inputs.repository }}
+          token: ${{ inputs.token }}
+          variables: |
+            github_token = "${{ inputs.token }}"
+            github_repository = "${{ inputs.repository }}"
+            environment_secrets = {
+              "development": {
+                "AWS_ACCESS_KEY_ID": "${{ secrets.IAM_AWS_CICD_ACCESSKEY_DEV }}",
+                "AWS_SECRET_ACCESS_KEY": "${{ secrets.IAM_AWS_CICD_SECRETID_DEV }}"
+              },
+              "staging": {
+                "AWS_ACCESS_KEY_ID": "${{ secrets.IAM_AWS_CICD_ACCESSKEY_STAGING }}",
+                "AWS_SECRET_ACCESS_KEY": "${{ secrets.IAM_AWS_CICD_SECRETID_STAGING }}"
+              },
+              "production": {
+                "AWS_ACCESS_KEY_ID": "${{ secrets.IAM_AWS_CICD_ACCESSKEY_PROD }}",
+                "AWS_SECRET_ACCESS_KEY": "${{ secrets.IAM_AWS_CICD_SECRETID_PROD }}"
+              }
+            }
