@@ -3,7 +3,7 @@ description: Create and optionally push a git tag for the current release
 
 inputs:
   tag:
-    description: Optional tag name to create (for example, 25.02.13.1). Defaults to date.
+    description: Optional tag name to create (for example, 25.02.13.1). Defaults to date and run number.
     required: false
     default: ''
     type: string
@@ -67,11 +67,12 @@ runs:
         COMMIT: ${{ inputs.commit }}
         ANNOTATED: ${{ inputs.annotated }}
         IS_RELEASE: ${{ inputs.release }}
+        RUN_NUMBER: ${{ github.run_number }}
       run: |
         set -euo pipefail
 
         if [[ -z "$TAG" ]]; then
-          TAG="$(date +'%y.%m.%d')"
+          TAG="$(date +'%y.%m.%d').${RUN_NUMBER}"
         fi
 
         if [[ "$IS_RELEASE" == "true" ]]; then
