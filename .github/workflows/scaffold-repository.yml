@@ -13,19 +13,19 @@ on:
         type: string
 
 jobs:
-  validate:
-    runs-on: ubuntu-latest
-    steps:
-      - run: env | grep GITHUB
-      - name: Check Repository
-        id: create_repo
-        env:
-          GH_TOKEN: ${{ inputs.token }}
-        run: |
-          if gh repo view amsrun/${{ inputs.repository }} > /dev/null 2>&1; then
-            echo "::error::Repository ${{ inputs.repository }} already exists. Cannot proceed."
-            exit 1
-          fi
+  # validate:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - run: env | grep GITHUB
+  #     - name: Check Repository
+  #       id: create_repo
+  #       env:
+  #         GH_TOKEN: ${{ inputs.token }}
+  #       run: |
+  #         if gh repo view amsrun/${{ inputs.repository }} > /dev/null 2>&1; then
+  #           echo "::error::Repository ${{ inputs.repository }} already exists. Cannot proceed."
+  #           exit 1
+  #         fi
 
   terraform:
     needs: validate
