@@ -32,17 +32,14 @@ runs:
   steps:
     - name: 'Show Action Path'
       shell: bash
-      run: echo $GITHUB_ACTION_PATH
-    - name: 'Test Variables'
+      run: |
+        echo "Action is running from: $GITHUB_ACTION_PATH"
+    - name: 'Get PWD'
       shell: bash
       run: |
-        echo "org var: ${{ inputs.org-var }}"
-        echo "repo var (input): ${{ inputs.repo-var }}"
-    - name: 'Run Tests'
-      id: run-tests
+        echo "Current directory: $(pwd)"
+    - name: 'ls action dir'
       shell: bash
       run: |
-        echo "Running tests from ${{ inputs.test-path }}"
-        echo "Timeout: ${{ inputs.timeout }}s"
-        echo "status=success" >> $GITHUB_OUTPUT
-        exit 0
+        cd $GITHUB_ACTION_PATH
+        ls -la
