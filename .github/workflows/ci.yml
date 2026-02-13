@@ -2,6 +2,7 @@ name: Continuous Integration
 
 on:
   push:
+  workflow_call:
 
 jobs:
   unit-test:
@@ -15,9 +16,23 @@ jobs:
             echo "Running unit tests..."
             # Add your test commands here, e.g., npm test, pytest, etc.
 
+  release-management:
+    name: Release management
+    uses: amsrun/template/.github/workflows/release-management.yml@main
+
+  debug:
+    needs: release-management
+    name: Debug
+    runs-on: ubuntu-latest
+    steps:
+      - name: Display Release Version
+        run: |
+          echo "Release version: ${{ needs.release-management.outputs.release-version }}"
+          echo "This version can be used for tagging, creating releases, etc."
+
   stage-two:
     runs-on: ubuntu-latest
-    needs: print-env-variable
+    needs: release-management
     environment: ${{ inputs.environment }}
     steps:
       - name: Print custom message
