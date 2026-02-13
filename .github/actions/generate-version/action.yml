@@ -26,3 +26,4 @@ runs:
             VERSION="${VERSION}_REL"
           fi
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Generated release version: ${VERSION}"
