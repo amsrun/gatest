@@ -12,6 +12,16 @@ inputs:
     required: false
     default: '300'
 
+  org-var:
+    description: 'Organization-level variable'
+    required: false
+    default: 'default-org-value'
+
+  repo-var:
+    description: 'Repository-level variable'
+    required: false
+    default: 'default-repo-value'
+
 outputs:
   result:
     description: 'Test result status'
@@ -23,8 +33,8 @@ runs:
     - name: 'Test Variables'
       shell: bash
       run: |
-        echo "org var: ${{ env.ORG_VAR }}"
-        echo "repo var: ${{ env.REPO_VAR }}"
+        echo "org var: ${{ inputs.org-var }}"
+        echo "repo var: ${{ inputs.repo-var }}"
     - name: 'Run Tests'
       id: run-tests
       shell: bash
