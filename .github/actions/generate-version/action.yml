@@ -1,0 +1,28 @@
+name: Tag Release
+description: Create and optionally push a git tag for the current release
+
+inputs:
+  release:
+    description: Whether to append _REL to the tag
+    required: false
+    default: false
+    type: boolean
+
+outputs:
+  version:
+    description: The version that was created
+    value: ${{ steps.create-version.outputs.version }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Generate Release Version
+      id: create-version
+      shell: bash
+      run: |
+          DATE=$(date +'%y.%m.%d')
+          VERSION="${DATE}.${{ github.run_number }}"
+          if [[ "${{ inputs.release }}" == "true" ]]; then
+            VERSION="${VERSION}_REL"
+          fi
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
