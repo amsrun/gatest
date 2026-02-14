@@ -79,7 +79,7 @@ jobs:
 
       - name: Scaffold Repository with Terraform
         id: scaffold_repo
-        uses: ./actions/scaffold-repository
+        uses: amsrun/template/actions/scaffold-repository
         with:
           repository: ${{ inputs.repository }}
           token: ${{ inputs.token }}
@@ -100,7 +100,7 @@ jobs:
 
       - name: Setup Deployment Environment with Terraform
         id: setup_deployment_environment
-        uses: ./actions/scaffold-environment
+        uses: amsrun/template/actions/scaffold-environment
         with:
           repository: ${{ inputs.repository }}
           token: ${{ inputs.token }}
@@ -166,7 +166,7 @@ jobs:
       - name: Create Default Branch from Template
         if: ${{ steps.check_branch.outputs.branch_exists != 'true' }}
         id: scaffold_default_branch
-        uses: ./actions/scaffold-default-branch
+        uses: amsrun/template/actions/scaffold-default-branch
         with:
           repository: ${{ inputs.repository }}
           token: ${{ inputs.token }}
