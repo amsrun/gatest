@@ -135,6 +135,7 @@ jobs:
             }
             repository_variables = {
               "INFRASTRUCTURE_PROJECT": "${{ inputs.infra_name }}"
+              "ECR_REPOSITORY": "${{ inputs.infra_name }}"
             }
 
   scaffold-default-branch:

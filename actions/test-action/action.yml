@@ -1,0 +1,19 @@
+name: 'Simple Test Action'
+description: 'A simple composite action that runs tests'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: 'Show Action Path'
+      shell: bash
+      run: |
+        echo "Action is running from: $GITHUB_ACTION_PATH"
+    - name: 'Get PWD'
+      shell: bash
+      run: |
+        echo "Current directory: $(pwd)"
+    - name: 'ls action dir'
+      shell: bash
+      run: |
+        cd $GITHUB_ACTION_PATH
+        ls -la
