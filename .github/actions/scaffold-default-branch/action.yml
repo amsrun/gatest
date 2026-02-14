@@ -11,7 +11,7 @@ inputs:
     required: true
     type: string
   branch:
-    description: 'Default branch name (main or develop)'
+    description: 'Default branch name'
     required: false
     default: 'develop'
     type: string

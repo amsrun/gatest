@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       repository:
-        description: 'Repository name (only)'
+        description: 'Repository name'
         required: true
         type: string
       token:
