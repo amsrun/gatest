@@ -14,7 +14,7 @@ runs:
       id: create-version
       shell: bash
       env:
-        GITHUB_TOKEN: ${{ github.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ github.token }}
         TAG: ${{ inputs.tag }}
       run: |
           gh release create "${TAG}" --repo "${GITHUB_REPOSITORY}" --title "${TAG}" --generate-notes
