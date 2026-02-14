@@ -85,7 +85,7 @@ runs:
 
         if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
           echo "Tag $TAG already exists." >&2
-          exit 1
+          exit 0
         fi
 
         target_ref=""
