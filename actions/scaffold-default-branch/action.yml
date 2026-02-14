@@ -48,7 +48,7 @@ runs:
         # Create and checkout new branch (main or develop)
         git init
         git add .
-        git commit -m "Initial commit - Seed repository with template files"
+        git commit -m "Initial commit"
         git branch -M ${{ inputs.branch }}
 
     - name: Set up remote origin with token
