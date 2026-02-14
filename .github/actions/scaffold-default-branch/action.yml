@@ -1,0 +1,80 @@
+name: Scaffold Default Branch
+description: 'Create the default branch from template'
+
+inputs:
+  repository:
+    description: 'Name for the new repository (name only)'
+    required: true
+    type: string
+  token:
+    description: 'GitHub Token with repo permissions'
+    required: true
+    type: string
+  branch:
+    description: 'Default branch name (main or develop)'
+    required: false
+    default: 'develop'
+    type: string
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Prepare seed files
+      shell: bash
+      run: |
+        # Create a temporary directory for the new repo
+        # mkdir -p /tmp/new-repo/.github/workflows
+
+        # # Copy template files (adjust paths as needed)
+        # cp -r .github/workflows /tmp/new-repo/.github/ 2>/dev/null || echo "No templates directory"
+        # cp LICENSE.txt /tmp/new-repo/ 2>/dev/null || echo "No LICENSE"
+        # cp README.md /tmp/new-repo/ 2>/dev/null || echo "No README"
+
+        # You can add more files to copy here
+        # cp -r src /tmp/new-repo/
+        # cp -r config /tmp/new-repo/
+
+        cp -r ./repository_seed /tmp/new-repo
+        ls -la /tmp/new-repo
+
+    - name: Initialize new repository
+      working-directory: /tmp/new-repo
+      shell: bash
+      run: |
+        git init
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
+        # Create and checkout new branch (main or develop)
+        git init
+        git add .
+        git commit -m "Initial commit - Seed repository with template files"
+        git branch -M ${{ inputs.branch }}
+
+    - name: Set up remote origin with token
+      working-directory: /tmp/new-repo
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.token }}
+        REPO_NAME: ${{ inputs.repository }}
+      run: |
+        # Set up remote origin using the token
+        git remote add origin https://${GH_TOKEN}@github.com/amsrun/${REPO_NAME}.git
+
+        # Verify remote is set
+        git remote -v
+
+    - name: Push to new repository
+      working-directory: /tmp/new-repo
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.token }}
+      run: |
+        # Push to origin
+        git push -u origin ${{ inputs.branch }}
+
+    - name: Summary
+      shell: bash
+      run: |
+        echo "✅ Repository ${{ inputs.repository }} has been seeded successfully!"
+        echo "🔗 https://github.com/amsrun/${{ inputs.repository }}"

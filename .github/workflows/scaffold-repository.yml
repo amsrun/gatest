@@ -1,4 +1,4 @@
-name: Scaffold New Repository
+name: Scaffold Repository
 
 on:
   workflow_dispatch:
@@ -11,9 +11,25 @@ on:
         description: 'GitHub Token with repo and workflow permissions'
         required: true
         type: string
+      create_repository:
+        description: 'Create a new repository'
+        required: false
+        default: false
+        type: boolean
+      create_deployment_environment:
+        description: 'Create deployment environment for the repository'
+        required: false
+        default: false
+        type: boolean
+      create_default_branch:
+        description: 'Name of the default branch to create from template (leave empty to skip)'
+        required: false
+        default: 'develop'
+        type: string
 
 jobs:
   check-availability:
+    if: ${{ inputs.create_repository }}
     runs-on: ubuntu-latest
     steps:
       - name: Check new repository availability
@@ -26,8 +42,23 @@ jobs:
             exit 1
           fi
 
-  terraform:
-    needs: check-availability
+  check-existence:
+    if: ${{ !inputs.create_repository }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check repository exists
+        id: check_repo
+        env:
+          GH_TOKEN: ${{ inputs.token }}
+        run: |
+          if ! gh repo view amsrun/${{ inputs.repository }} > /dev/null 2>&1; then
+            echo "::error::Repository ${{ inputs.repository }} does not exist. Cannot proceed."
+            exit 1
+          fi
+
+  scaffold:
+    needs: [check-availability, check-existence]
+    if: ${{ !cancelled() && !contains(needs.*.result, 'failure') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout template repository
@@ -37,6 +68,7 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Scaffold Repository with Terraform
+        if: ${{ inputs.create_repository }}
         id: scaffold_repo
         uses: ./.github/actions/scaffold-repository
         with:
@@ -47,8 +79,9 @@ jobs:
             github_repository = "${{ inputs.repository }}"
 
       - name: Setup Deployment Environment with Terraform
+        if: ${{ inputs.create_deployment_environment }}
         id: setup_deployment_environment
-        uses: ./.github/actions/setup-deploy-environment
+        uses: ./.github/actions/scaffold-deploy-environment
         with:
           repository: ${{ inputs.repository }}
           token: ${{ inputs.token }}
@@ -69,3 +102,13 @@ jobs:
                 "AWS_SECRET_ACCESS_KEY": "${{ secrets.IAM_AWS_CICD_SECRETID_PROD }}"
               }
             }
+
+      - name: Create Default Branch from Template
+        if: ${{ inputs.create_default_branch != '' }}
+        id: scaffold_default_branch
+        uses: ./.github/actions/scaffold-default-branch
+        shell: bash
+        with:
+          repository: ${{ inputs.repository }}
+          token: ${{ inputs.token }}
+          branch: ${{ inputs.create_default_branch }}

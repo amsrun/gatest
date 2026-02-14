@@ -48,7 +48,7 @@ resource "github_repository_environment" "staging" {
   }
 
   reviewers {
-    teams = [data.github_team.dp_reviewers.id]
+    teams = [data.github_team.dp.id]
   }
 }
 
@@ -73,7 +73,7 @@ resource "github_repository_environment" "production" {
 
   reviewers {
     users = [data.github_user.current.id]
-    teams = [data.github_team.dp_reviewers.id]
+    teams = [data.github_team.dp_po.id]
   }
 }
 

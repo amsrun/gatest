@@ -1,4 +1,4 @@
-name: Scaffold New Repository
+name: Scaffold Deployment Environment
 description: 'Scaffolds a new repository with Terraform configuration to create the repository'
 
 inputs:
@@ -10,11 +10,6 @@ inputs:
     description: 'GitHub Token with repo and workflow permissions'
     required: true
     type: string
-  owner:
-    description: 'GitHub username or organization that will own the new repository'
-    required: true
-    type: string
-    default: 'amsrun'
   variables:
     description: Content for Terraform variable files
     required: false
@@ -25,11 +20,12 @@ runs:
   using: 'composite'
   steps:
     - name: Create terraform.tfvars with inputs
+      shell: bash
       run: |
         cat <<'EOF' > ${{ github.action_path }}/terraform.tfvars
         ${{inputs.variables}}
         EOF
-      shell: bash
+
     - name: Apply Terraform to Scaffold Repository
       uses: ./.github/actions/terraform-apply
       with:

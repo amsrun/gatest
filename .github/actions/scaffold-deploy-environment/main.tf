@@ -17,12 +17,16 @@ data "github_repository" "this" {
   name = var.github_repository
 }
 
-data "github_team" "dp_reviewers" {
-  slug = "dp-reviewers"
+data "github_team" "dp" {
+  slug = "Data-Platform"
 }
 
-data "github_team" "dp" {
-  slug = "dp"
+data "github_team" "dp_de" {
+  slug = "Data-Platform-DE"
+}
+
+data "github_team" "dp_po" {
+  slug = "Data-Platform-PO"
 }
 
 data "github_user" "current" {

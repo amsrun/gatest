@@ -7,27 +7,13 @@ inputs:
     required: true
     default: .
 
-  # variables:
-  #   description: Content for Terraform variable files
-  #   required: true
-  #   default: ''
-
 runs:
   using: composite
   steps:
-    # - name: Create terraform.tfvars with inputs
-    #   working-directory: ${{ inputs.working-directory }}
-    #   shell: bash
-    #   run: |
-    #     FILE_CONTENT="${{ inputs.variables }}"
-    #     cat <<EOF > terraform.tfvars
-    #     $FILE_CONTENT
-    #     EOF
-
     - name: Terraform Init
       shell: bash
       working-directory: ${{ inputs.working-directory }}
-      run: terraform init
+      run: terraform init -upgrade
 
     - name: Terraform Plan
       shell: bash
