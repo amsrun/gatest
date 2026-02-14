@@ -17,4 +17,4 @@ runs:
         GH_TOKEN: ${{ github.token }}
         TAG: ${{ inputs.tag }}
       run: |
-          gh release create "${TAG}" --repo "${GITHUB_REPOSITORY}" --title "${TAG}" --generate-notes
+          gh release create "${TAG}" --repo "${GITHUB_REPOSITORY}" --title "${TAG#v}" --generate-notes
